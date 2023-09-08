@@ -1,13 +1,25 @@
 import express from "express";
-import { allTask, creatTask, deleteTask, loginUser, logoutUser, registerUser } from "../controllers/users.js";
+import {
+  loginUser,
+  logoutUser,
+  me,
+  registerUser,
+} from "../controllers/users.js";
+import { isAunthicated } from "../utils/auth.js";
+import { allTask, creatTask, deleteTask, updateTask } from "../controllers/tasks.js";
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.delete("/logout", logoutUser);
-router.put("/task", creatTask);
-router.delete("/delete", deleteTask);
-router.get("/all", allTask);
+router.get("/me", isAunthicated, me);
+router.post("/logout", isAunthicated, logoutUser);
 
+router.post("/task", isAunthicated, creatTask);
+router.get("/all", isAunthicated, allTask);
+router.delete("/delete", isAunthicated, deleteTask);
+router
+  .route("/:id")
+  .put(isAunthicated, updateTask)
+  .delete(isAunthicated, deleteTask);
 export default router;
